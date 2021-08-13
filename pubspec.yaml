@@ -1,0 +1,66 @@
+name: pix_keychain
+description: Gerenciador de chaves Pix.
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `pub publish`. This is preferred for private packages.
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
+
+version: 1.2.0+10
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.1
+
+  shared_preferences: ^0.5.12+2
+  qr_flutter: ^3.2.0
+  flutter_barcode_scanner: ^1.0.1
+  google_fonts: ^1.1.1
+  share: ^0.6.5+4
+  uuid: ^2.2.2
+  hive: ^1.4.4+1
+  hive_flutter: ^0.3.1
+  flutter_colorpicker: ^0.3.4
+  clipboard: ^0.1.2+8
+  mask_text_input_formatter: ^1.1.0
+  flutter_swiper: ^1.1.6
+  #local_auth: ^0.6.3+3
+  url_launcher: ^5.7.10
+  back_button_interceptor: ^4.4.0
+  crclib: ^2.0.0
+  #provider: ^4.3.2+2
+  #firebase_admob: ^0.10.1
+  #flutter_slidable: ^0.5.7
+
+  #Experimental overlay for welcome
+  overlay_screen: ^1.2.0+1
+  package_info: ^0.4.3+2
+  intl: ^0.16.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  hive_generator: ^0.8.2
+  build_runner: ^1.10.6
+  flutter_launcher_icons: ^0.8.1
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/bg_transfer.png
+    - assets/images/bg_vault.png
+    - assets/images/bg_search.png
+    - assets/images/logo.png
+    - assets/images/logo_name.png
+    - assets/images/pix_logo.png
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/logo.png"
