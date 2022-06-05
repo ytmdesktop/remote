@@ -7,6 +7,7 @@ import 'package:marquee/marquee.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
+import 'package:perfect_volume_control/perfect_volume_control.dart';
 
 import 'package:ytmdesktop_remote/model/track_info.dart';
 import 'package:ytmdesktop_remote/model/player_info.dart';
@@ -20,11 +21,7 @@ import 'package:ytmdesktop_remote/page/server_add.dart';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 
-import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'package:ytmdesktop_remote/page/welcome.dart';
-
-const KEY_VOLUME_UP = 'Audio Volume Up';
-const KEY_VOLUME_DOWN = 'Audio Volume Down';
 
 final _urlImage = RegExp(r'(https?)://');
 
@@ -68,6 +65,8 @@ class _PlayerPageState extends State<PlayerPage>
   bool _isFirstSong = true;
   bool _isLastSong = true;
 
+  double currentvol = 0.5;
+
   String _connectionText = "-";
 
   ScrollController _listViewController = new ScrollController();
@@ -76,6 +75,28 @@ class _PlayerPageState extends State<PlayerPage>
 
   @override
   void initState() {
+    PerfectVolumeControl.stream.listen((volume) {
+      //volume button is pressed,
+      // this listener will be triggeret 3 times at one button press
+
+      if (volume != currentvol) {
+        //only execute button type check once time
+        if (volume > currentvol) {
+          //if new volume is greater, then it up button
+          mediaVolumeUp();
+        } else {
+          //else it is down button
+          mediaVolumeDown();
+        }
+        showOverflowCover();
+      }
+
+      setState(() {
+        currentvol = volume;
+      });
+      return false;
+    });
+
     super.initState();
 
     OverlayScreen().saveScreens({
@@ -87,40 +108,9 @@ class _PlayerPageState extends State<PlayerPage>
     });
 
     BackButtonInterceptor.add(backButtonInterceptor);
+    PerfectVolumeControl.hideUI = true;
 
     initSettings();
-
-    MediaNotification.setListener('pause', () {
-      mediaPlayPauseTrack();
-    });
-
-    MediaNotification.setListener('play', () {
-      mediaPlayPauseTrack();
-    });
-
-    MediaNotification.setListener('next', () {
-      mediaNextTrack();
-    });
-
-    MediaNotification.setListener('prev', () {
-      mediaPreviousTrack();
-    });
-
-    // MediaNotification.setListener('select', () {});
-
-    RawKeyboard.instance.addListener((RawKeyEvent key) {
-      if (key is RawKeyDownEvent) {
-        if (key.data.physicalKey.debugName == KEY_VOLUME_UP ||
-            key.data.logicalKey.debugName == KEY_VOLUME_UP) {
-          mediaVolumeUp();
-        }
-
-        if (key.data.physicalKey.debugName == KEY_VOLUME_DOWN ||
-            key.data.logicalKey.debugName == KEY_VOLUME_DOWN) {
-          mediaVolumeDown();
-        }
-      }
-    });
 
     _tabController = new TabController(length: 2, vsync: this);
 
@@ -143,10 +133,11 @@ class _PlayerPageState extends State<PlayerPage>
 
   void initSettings() async {
     prefs = await SharedPreferences.getInstance();
+    currentvol = await PerfectVolumeControl.getVolume();
 
     bool isFirstAccess = true;
     isFirstAccess = prefs.getBool('is_first_access');
-    
+
     if (isFirstAccess == null || isFirstAccess == true) {
       OverlayScreen().show(
         context,
@@ -253,10 +244,10 @@ class _PlayerPageState extends State<PlayerPage>
           });
         }
 
-        MediaNotification.showNotification(
-            title: trackInfo.title,
-            author: trackInfo.author,
-            isPlaying: !playerInfo.isPaused);
+        //MediaNotification.showNotification(
+        //    title: trackInfo.title,
+        //    author: trackInfo.author,
+        //    isPlaying: !playerInfo.isPaused);
 
         if (_tabController.index == 1) {
           socket.emit('query-lyrics');
@@ -372,8 +363,8 @@ class _PlayerPageState extends State<PlayerPage>
         )
       ],
     );
-
-    showDialog(context: context, child: alertDialog);
+    print("dialog pls");
+    //showDialog(context: context, child: alertDialog);
   }
 
   void mediaPreviousTrack() {
@@ -1234,15 +1225,11 @@ class _PlayerPageState extends State<PlayerPage>
     );
   }
 
-  double calcInverse(value) {
-    return 1 - value;
-  }
-
   @override
   void dispose() {
     BackButtonInterceptor.remove(backButtonInterceptor);
     _tabController.dispose();
-    MediaNotification.hideNotification();
+    PerfectVolumeControl.hideUI = false;
 
     super.dispose();
   }

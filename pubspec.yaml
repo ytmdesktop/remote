@@ -1,5 +1,5 @@
-name: pix_keychain
-description: Gerenciador de chaves Pix.
+name: ytmdesktop_remote
+description: YouTube Music Desktop Remote App
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -29,17 +29,21 @@ dependencies:
   mask_text_input_formatter: ^1.1.0
   flutter_swiper: ^1.1.6
   #local_auth: ^0.6.3+3
-  url_launcher: ^5.7.10
+  #url_launcher: ^5.7.10
   back_button_interceptor: ^4.4.0
   crclib: ^2.0.0
   #provider: ^4.3.2+2
   #firebase_admob: ^0.10.1
   #flutter_slidable: ^0.5.7
-
+  socket_io_client: ^1.0.2
+  marquee: ^2.2.0
+  sliding_up_panel: ^2.0.0+1
+  flutter_media_notification: ^1.2.6
   #Experimental overlay for welcome
   overlay_screen: ^1.2.0+1
   package_info: ^0.4.3+2
   intl: ^0.16.1
+  perfect_volume_control: ^1.0.5
 
 dev_dependencies:
   flutter_test:
@@ -53,14 +57,9 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/bg_transfer.png
-    - assets/images/bg_vault.png
-    - assets/images/bg_search.png
-    - assets/images/logo.png
-    - assets/images/logo_name.png
-    - assets/images/pix_logo.png
+    - assets/image/
 
 flutter_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/images/logo.png"
+  image_path: "assets/image/logo256x256.png"
